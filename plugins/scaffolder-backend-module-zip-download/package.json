@@ -1,0 +1,46 @@
+{
+  "name": "@internal/backstage-plugin-scaffolder-backend-module-zip-download",
+  "version": "0.1.0",
+  "license": "UNLICENSED",
+  "private": true,
+  "description": "The zip-download module for @backstage/plugin-scaffolder-backend",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "backend-plugin-module",
+    "pluginId": "scaffolder",
+    "pluginPackage": "@backstage/plugin-scaffolder-backend"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/backend-plugin-api": "^1.9.1",
+    "@backstage/plugin-scaffolder-node": "^0.13.3",
+    "archiver": "^8.0.0",
+    "fs-extra": "^11.3.5",
+    "uuid": "^14.0.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@backstage/backend-test-utils": "^1.11.3",
+    "@backstage/cli": "^0.36.2",
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.11",
+    "@types/archiver": "^7.0.0",
+    "@types/fs-extra": "^11.0.4"
+  },
+  "files": [
+    "dist"
+  ]
+}

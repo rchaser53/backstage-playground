@@ -7,6 +7,14 @@
  */
 
 import { createBackend } from '@backstage/backend-defaults';
+import {
+  coreServices,
+  createBackendPlugin,
+} from '@backstage/backend-plugin-api';
+import path from 'path';
+import express from 'express';
+
+const downloadDir = path.join('/tmp', 'backstage-scaffolder-downloads');
 
 const backend = createBackend();
 
@@ -65,5 +73,27 @@ backend.add(import('@backstage/plugin-signals-backend'));
 
 // mcp actions plugin
 backend.add(import('@backstage/plugin-mcp-actions-backend'));
+
+backend.add(
+  import('@internal/backstage-plugin-scaffolder-backend-module-zip-download'),
+);
+backend.add(
+  createBackendPlugin({
+    pluginId: 'static-downloads',
+    register(env) {
+      env.registerInit({
+        deps: {
+          rootHttpRouter: coreServices.rootHttpRouter,
+        },
+        async init({ rootHttpRouter }) {
+          rootHttpRouter.use(
+            '/static/scaffolder-downloads',
+            express.static(downloadDir) as any,
+          );
+        },
+      });
+    },
+  }),
+);
 
 backend.start();

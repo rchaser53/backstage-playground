@@ -1,0 +1,1 @@
+export { scaffolderModuleZipDownload as default } from './module';

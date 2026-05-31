@@ -114,7 +114,8 @@ catalog:
 
     # Local example template
     - type: file
-      target: ../../examples/template/template.yaml
+      # target: ../../examples/template/git-push.yaml
+      target: ../../examples/template/local-download.yaml
       rules:
         - allow: [Template]
 
