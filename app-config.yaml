@@ -61,10 +61,17 @@ integrations:
 proxy:
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.
-  # endpoints:
-  #   '/test':
-  #     target: 'https://example.com'
-  #     changeOrigin: true
+  endpoints:
+    '/snyk':
+      target: 'https://api.snyk.io'
+      headers:
+        User-Agent: tech-services/backstage-plugin/1.x
+        Authorization: token ${SNYK_TOKEN}
+
+snyk:
+  appHost: app.snyk.io
+  mocked: false
+  showResolvedInGraphs: false
 
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration
 # Note: After experimenting with basic setup, use CI/CD to generate docs
@@ -111,6 +118,9 @@ catalog:
 
     - type: file
       target: ../../examples/fuga.yaml
+
+    - type: file
+      target: ../../catalog-info.yaml
 
     # Local example template
     - type: file

@@ -1,13 +1,16 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-playground
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  name: batch-services
+  description: Batch related repositories
+  annotations:
+    snyk.io/org-id: 015ef01f-0184-4ba1-8f4d-0d90bcd025cd
+    snyk.io/targets: rchaser53/batch-timer
+# spec:
+#   type: service
+#   lifecycle: production
+#   owner: user:default/rchaser53
 spec:
   type: website
-  owner: john@example.com
+  owner: user:guest
   lifecycle: experimental
