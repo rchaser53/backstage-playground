@@ -10,6 +10,7 @@ app:
     - page:catalog:
         config:
           path: /
+    - entity-content:kubernetes/kubernetes
 
 organization:
   name: My Company
@@ -147,6 +148,14 @@ catalog:
 
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
+  serviceLocatorMethod:
+    type: singleTenant
+  clusterLocatorMethods:
+    - type: localKubectlProxy
+  customResources:
+    - group: core
+      apiVersion: v1
+      plural: nodes
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:

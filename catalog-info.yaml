@@ -4,6 +4,7 @@ metadata:
   name: batch-services
   description: Batch related repositories
   annotations:
+    backstage.io/kubernetes-id: batch-services
     snyk.io/org-id: 015ef01f-0184-4ba1-8f4d-0d90bcd025cd
     snyk.io/targets: rchaser53/batch-timer
 # spec:
