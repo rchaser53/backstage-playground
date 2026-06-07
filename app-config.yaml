@@ -107,6 +107,10 @@ scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
 
 catalog:
+  # 開発用にだけ設定
+  # https://github.com/backstage/backstage/issues/24115
+  processingInterval:
+    seconds: 5
   import:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
