@@ -152,10 +152,6 @@ kubernetes:
     type: singleTenant
   clusterLocatorMethods:
     - type: localKubectlProxy
-  customResources:
-    - group: core
-      apiVersion: v1
-      plural: nodes
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:

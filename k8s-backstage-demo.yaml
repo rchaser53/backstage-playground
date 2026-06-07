@@ -1,0 +1,24 @@
+# k8s-backstage-demo.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backstage-demo
+  namespace: default
+  labels:
+    backstage.io/kubernetes-id: batch-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backstage-demo
+  template:
+    metadata:
+      labels:
+        app: backstage-demo
+        backstage.io/kubernetes-id: batch-services
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27
+          ports:
+            - containerPort: 80

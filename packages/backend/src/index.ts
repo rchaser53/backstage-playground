@@ -9,15 +9,8 @@
 import { createBackend } from '@backstage/backend-defaults';
 import {
   coreServices,
-  createBackendModule,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
-import { kubernetesFetcherExtensionPoint } from '@backstage/plugin-kubernetes-node';
-import type {
-  CustomResource,
-  KubernetesFetcher,
-  ObjectFetchParams,
-} from '@backstage/plugin-kubernetes-node';
 import path from 'path';
 import express from 'express';
 
@@ -73,44 +66,6 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
 // kubernetes plugin
 backend.add(import('@backstage/plugin-kubernetes-backend'));
-backend.add(
-  createBackendModule({
-    pluginId: 'kubernetes',
-    moduleId: 'core-api-custom-resources',
-    register(env) {
-      env.registerInit({
-        deps: {
-          kubernetesFetcher: kubernetesFetcherExtensionPoint,
-        },
-        async init({ kubernetesFetcher }) {
-          kubernetesFetcher.addFetcher(async ({ getDefault }) => {
-            const defaultFetcher = await getDefault();
-
-            return {
-              fetchObjectsForService(params: ObjectFetchParams) {
-                return defaultFetcher.fetchObjectsForService({
-                  ...params,
-                  customResources: params.customResources.map(resource =>
-                    resource.group === 'core'
-                      ? ({ ...resource, group: '' } as CustomResource)
-                      : resource,
-                  ),
-                });
-              },
-              fetchPodMetricsByNamespaces(
-                ...args: Parameters<
-                  KubernetesFetcher['fetchPodMetricsByNamespaces']
-                >
-              ) {
-                return defaultFetcher.fetchPodMetricsByNamespaces(...args);
-              },
-            };
-          });
-        },
-      });
-    },
-  }),
-);
 
 // notifications and signals plugins
 backend.add(import('@backstage/plugin-notifications-backend'));
