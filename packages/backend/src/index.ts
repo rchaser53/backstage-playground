@@ -28,6 +28,9 @@ backend.add(
   import('@backstage/plugin-scaffolder-backend-module-notifications'),
 );
 
+// tech radar plugin
+backend.add(import('@backstage-community/plugin-tech-radar-backend'));
+
 // techdocs plugin
 backend.add(import('@backstage/plugin-techdocs-backend'));
 

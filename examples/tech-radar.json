@@ -1,0 +1,43 @@
+{
+  "quadrants": [
+    { "id": "languages", "name": "Languages" },
+    { "id": "frameworks", "name": "Frameworks" },
+    { "id": "infrastructure", "name": "Infrastructure" },
+    { "id": "tools", "name": "Tools" }
+  ],
+  "rings": [
+    { "id": "adopt", "name": "ADOPT", "color": "#5ba300" },
+    { "id": "trial", "name": "TRIAL", "color": "#009eb0" },
+    { "id": "assess", "name": "ASSESS", "color": "#c7ba00" },
+    { "id": "hold", "name": "HOLD", "color": "#e09b96" }
+  ],
+  "entries": [
+    {
+      "key": "backstage",
+      "id": "backstage",
+      "title": "Backstage",
+      "quadrant": "tools",
+      "ring": "adopt",
+      "moved": 0,
+      "url": "https://backstage.io/"
+    },
+    {
+      "key": "react",
+      "id": "react",
+      "title": "React",
+      "quadrant": "frameworks",
+      "ring": "adopt",
+      "moved": 0,
+      "url": "https://react.dev/"
+    },
+    {
+      "key": "kubernetes",
+      "id": "kubernetes",
+      "title": "Kubernetes",
+      "quadrant": "infrastructure",
+      "ring": "trial",
+      "moved": 1,
+      "url": "https://kubernetes.io/"
+    }
+  ]
+}
