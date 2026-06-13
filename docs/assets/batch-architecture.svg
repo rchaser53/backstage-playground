@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="460" viewBox="0 0 960 460" role="img" aria-labelledby="title desc">
+  <title id="title">batch-services architecture</title>
+  <desc id="desc">API, queue, worker pool, storage, and observability flow for batch-services.</desc>
+  <rect width="960" height="460" fill="#f7f8fa"/>
+  <rect x="48" y="70" width="160" height="92" rx="8" fill="#ffffff" stroke="#1f6feb" stroke-width="3"/>
+  <text x="128" y="108" font-family="Arial, sans-serif" font-size="22" text-anchor="middle" fill="#172033">API</text>
+  <text x="128" y="136" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#4b5563">validate request</text>
+  <rect x="296" y="70" width="160" height="92" rx="8" fill="#ffffff" stroke="#8a63d2" stroke-width="3"/>
+  <text x="376" y="108" font-family="Arial, sans-serif" font-size="22" text-anchor="middle" fill="#172033">Queue</text>
+  <text x="376" y="136" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#4b5563">buffer jobs</text>
+  <rect x="544" y="70" width="176" height="92" rx="8" fill="#ffffff" stroke="#2da44e" stroke-width="3"/>
+  <text x="632" y="108" font-family="Arial, sans-serif" font-size="22" text-anchor="middle" fill="#172033">Worker Pool</text>
+  <text x="632" y="136" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#4b5563">process and retry</text>
+  <rect x="792" y="70" width="120" height="92" rx="8" fill="#ffffff" stroke="#bf8700" stroke-width="3"/>
+  <text x="852" y="108" font-family="Arial, sans-serif" font-size="22" text-anchor="middle" fill="#172033">Storage</text>
+  <text x="852" y="136" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#4b5563">results</text>
+  <rect x="310" y="286" width="340" height="96" rx="8" fill="#ffffff" stroke="#57606a" stroke-width="3"/>
+  <text x="480" y="324" font-family="Arial, sans-serif" font-size="22" text-anchor="middle" fill="#172033">Observability</text>
+  <text x="480" y="352" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#4b5563">logs, metrics, traces, alerts</text>
+  <path d="M208 116h84" fill="none" stroke="#172033" stroke-width="3"/>
+  <path d="M282 104l18 12-18 12z" fill="#172033"/>
+  <path d="M456 116h84" fill="none" stroke="#172033" stroke-width="3"/>
+  <path d="M530 104l18 12-18 12z" fill="#172033"/>
+  <path d="M720 116h68" fill="none" stroke="#172033" stroke-width="3"/>
+  <path d="M778 104l18 12-18 12z" fill="#172033"/>
+  <path d="M128 162C128 250 260 334 310 334" fill="none" stroke="#6b7280" stroke-width="2" stroke-dasharray="8 8"/>
+  <path d="M632 162C632 232 560 286 520 286" fill="none" stroke="#6b7280" stroke-width="2" stroke-dasharray="8 8"/>
+  <path d="M852 162C852 250 690 334 650 334" fill="none" stroke="#6b7280" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="480" y="424" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#4b5563">Dashed lines emit telemetry to observability.</text>
+</svg>

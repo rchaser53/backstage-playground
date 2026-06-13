@@ -1,4 +1,28 @@
-site_name: batch-services
+site_name: batch-services TechDocs Sample
+site_description: TechDocs features sample for the batch-services component
+repo_url: https://github.com/rchaser53/backstage-playground
+edit_uri: edit/main/docs/
 docs_dir: docs
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Overview: getting-started/overview.md
+      - Authoring Patterns: getting-started/authoring-patterns.md
+  - Guides:
+      - Runbook: guides/runbook.md
+      - Architecture: guides/architecture.md
+  - Reference:
+      - API Contract: reference/api-contract.md
+      - Operations Checklist: reference/operations-checklist.md
 plugins:
   - techdocs-core
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - fenced_code
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
