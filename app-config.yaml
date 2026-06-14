@@ -142,6 +142,9 @@ catalog:
       rules:
         - allow: [User, Group]
 
+    - type: url
+      target: https://github.com/rchaser53/sample-techdocs-service/blob/main/catalog-info.yaml
+
     ## Uncomment these lines to add more example data
     # - type: url
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
@@ -184,3 +187,4 @@ mcpActions:
 
 techRadar:
   url: file:./examples/tech-radar.json
+
