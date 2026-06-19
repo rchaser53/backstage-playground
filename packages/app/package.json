@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "@backstage-community/plugin-tech-radar": "^1.18.0",
+    "@backstage-community/plugin-tech-radar-common": "^1.17.0",
     "@backstage/cli": "^0.36.2",
+    "@backstage/core-compat-api": "^0.5.11",
     "@backstage/core-components": "^0.18.10",
     "@backstage/core-plugin-api": "^1.12.6",
     "@backstage/frontend-defaults": "^0.5.2",

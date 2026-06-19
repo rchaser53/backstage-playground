@@ -10,6 +10,7 @@ import {
 } from '@backstage/plugin-techdocs-module-addons-contrib/alpha';
 import snykPlugin from 'backstage-plugin-snyk/alpha';
 import { navModule } from './modules/nav';
+import { techRadarModule } from './modules/techRadar';
 
 export default createApp({
   features: [
@@ -22,5 +23,6 @@ export default createApp({
     techDocsTextSizeAddonModule,
     snykPlugin,
     navModule,
+    techRadarModule,
   ],
 });

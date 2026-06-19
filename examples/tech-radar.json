@@ -6,10 +6,30 @@
     { "id": "tools", "name": "Tools" }
   ],
   "rings": [
-    { "id": "adopt", "name": "ADOPT", "color": "#5ba300" },
-    { "id": "trial", "name": "TRIAL", "color": "#009eb0" },
-    { "id": "assess", "name": "ASSESS", "color": "#c7ba00" },
-    { "id": "hold", "name": "HOLD", "color": "#e09b96" }
+    {
+      "id": "adopt",
+      "name": "ADOPT",
+      "color": "#5ba300",
+      "description": "Production default. Use for new work unless there is a specific reason not to."
+    },
+    {
+      "id": "trial",
+      "name": "TRIAL",
+      "color": "#009eb0",
+      "description": "Promising and approved for bounded production pilots."
+    },
+    {
+      "id": "assess",
+      "name": "ASSESS",
+      "color": "#c7ba00",
+      "description": "Worth researching, but not yet a standard choice."
+    },
+    {
+      "id": "hold",
+      "name": "HOLD",
+      "color": "#e09b96",
+      "description": "Avoid for new work and plan migration where practical."
+    }
   ],
   "entries": [
     {
@@ -17,27 +37,91 @@
       "id": "backstage",
       "title": "Backstage",
       "quadrant": "tools",
-      "ring": "adopt",
-      "moved": 0,
-      "url": "https://backstage.io/"
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "adopt",
+          "moved": 0,
+          "description": "Developer portal standard for catalog, TechDocs, templates, and integrations."
+        }
+      ],
+      "links": [{ "url": "https://backstage.io/", "title": "Backstage" }]
     },
     {
       "key": "react",
       "id": "react",
       "title": "React",
       "quadrant": "frameworks",
-      "ring": "adopt",
-      "moved": 0,
-      "url": "https://react.dev/"
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "adopt",
+          "moved": 0,
+          "description": "Default UI framework for internal web applications."
+        }
+      ],
+      "links": [{ "url": "https://react.dev/", "title": "React" }]
+    },
+    {
+      "key": "typescript",
+      "id": "typescript",
+      "title": "TypeScript",
+      "quadrant": "languages",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "adopt",
+          "moved": 0,
+          "description": "Standard language for frontend and Node.js services."
+        }
+      ],
+      "links": [
+        { "url": "https://www.typescriptlang.org/", "title": "TypeScript" }
+      ]
     },
     {
       "key": "kubernetes",
       "id": "kubernetes",
       "title": "Kubernetes",
       "quadrant": "infrastructure",
-      "ring": "trial",
-      "moved": 1,
-      "url": "https://kubernetes.io/"
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "trial",
+          "moved": 1,
+          "description": "Trial for services that need platform-managed deployment and observability."
+        }
+      ],
+      "links": [{ "url": "https://kubernetes.io/", "title": "Kubernetes" }]
+    },
+    {
+      "key": "terraform",
+      "id": "terraform",
+      "title": "Terraform",
+      "quadrant": "infrastructure",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "adopt",
+          "moved": 0,
+          "description": "Primary tool for infrastructure as code."
+        }
+      ],
+      "links": [{ "url": "https://www.terraform.io/", "title": "Terraform" }]
+    },
+    {
+      "key": "plain-javascript",
+      "id": "plain-javascript",
+      "title": "Plain JavaScript for apps",
+      "quadrant": "languages",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "hold",
+          "moved": -1,
+          "description": "Prefer TypeScript for maintainability and tooling."
+        }
+      ]
     }
   ]
 }

@@ -11,6 +11,8 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { TechRadarLoaderResponseParser } from '@backstage-community/plugin-tech-radar-common';
+import fs from 'fs/promises';
 import path from 'path';
 import express from 'express';
 
@@ -29,7 +31,110 @@ backend.add(
 );
 
 // tech radar plugin
-backend.add(import('@backstage-community/plugin-tech-radar-backend'));
+backend.add(
+  createBackendPlugin({
+    pluginId: 'tech-radar',
+    register(env) {
+      env.registerInit({
+        deps: {
+          httpRouter: coreServices.httpRouter,
+          logger: coreServices.logger,
+          config: coreServices.rootConfig,
+          reader: coreServices.urlReader,
+        },
+        async init({ httpRouter, logger, config, reader }) {
+          const router = express.Router();
+
+          const getRadarUrl = (id?: string) => {
+            if (id) {
+              return config.getOptionalString(`techRadar.radars.${id}`);
+            }
+            return config.getString('techRadar.url');
+          };
+
+          const readRadarJson = async (url: string) => {
+            if (url.startsWith('file:') && !url.startsWith('file://')) {
+              const filePath = url.slice('file:'.length);
+              const candidatePaths = path.isAbsolute(filePath)
+                ? [filePath]
+                : [
+                    path.resolve(process.cwd(), filePath),
+                    path.resolve(process.cwd(), '../..', filePath),
+                  ];
+
+              for (const candidatePath of candidatePaths) {
+                try {
+                  return JSON.parse(await fs.readFile(candidatePath, 'utf8'));
+                } catch (error) {
+                  if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+                    throw error;
+                  }
+                }
+              }
+
+              throw new Error(
+                `File not found in any candidate path: ${candidatePaths.join(', ')}`,
+              );
+            }
+
+            const result = await reader.readUrl(url);
+            return JSON.parse((await result.buffer()).toString('utf8'));
+          };
+
+          router.get('/health', (_, response) => {
+            response.json({ status: 'ok' });
+          });
+
+          router.get('/data', async (request, response) => {
+            const id =
+              typeof request.query.id === 'string'
+                ? request.query.id
+                : undefined;
+            const url = getRadarUrl(id);
+
+            if (!url) {
+              response.status(404).json({
+                message: `No tech radar configured for id '${id}'`,
+              });
+              return;
+            }
+
+            try {
+              const responseJson = await readRadarJson(url);
+              const validationResult =
+                TechRadarLoaderResponseParser.safeParse(responseJson);
+
+              if (!validationResult.success) {
+                logger.error(
+                  `Tech radar data validation failed for '${url}': ${validationResult.error.message}`,
+                );
+                response.status(502).json({
+                  message: `Invalid tech radar data for id '${id ?? 'default'}'`,
+                });
+                return;
+              }
+
+              response.json(validationResult.data);
+            } catch (error) {
+              logger.error(
+                `Failed to load tech radar data from '${url}': ${String(error)}`,
+              );
+              response.status(502).json({
+                message: `Unable to retrieve tech radar data for id '${id ?? 'default'}'`,
+              });
+            }
+          });
+
+          httpRouter.use(router as any);
+          httpRouter.addAuthPolicy({
+            path: '/health',
+            allow: 'unauthenticated',
+          });
+        },
+      });
+    },
+  }),
+);
 
 // techdocs plugin
 backend.add(import('@backstage/plugin-techdocs-backend'));

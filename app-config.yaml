@@ -187,4 +187,7 @@ mcpActions:
 
 techRadar:
   url: file:./examples/tech-radar.json
-
+  radars:
+    platform: file:./examples/tech-radar.json
+    data-ai: file:./examples/tech-radar-data-ai.json
+    security: file:./examples/tech-radar-security.json

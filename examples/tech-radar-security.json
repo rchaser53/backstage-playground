@@ -1,0 +1,122 @@
+{
+  "quadrants": [
+    { "id": "appsec", "name": "AppSec" },
+    { "id": "identity", "name": "Identity" },
+    { "id": "platform-security", "name": "Platform Security" },
+    { "id": "operations", "name": "Operations" }
+  ],
+  "rings": [
+    {
+      "id": "adopt",
+      "name": "ADOPT",
+      "color": "#5ba300",
+      "description": "Security practice or tool required for normal delivery."
+    },
+    {
+      "id": "trial",
+      "name": "TRIAL",
+      "color": "#009eb0",
+      "description": "Use on selected services while gathering operating evidence."
+    },
+    {
+      "id": "assess",
+      "name": "ASSESS",
+      "color": "#c7ba00",
+      "description": "Investigate before adopting broadly."
+    },
+    {
+      "id": "hold",
+      "name": "HOLD",
+      "color": "#e09b96",
+      "description": "Avoid for new systems."
+    }
+  ],
+  "entries": [
+    {
+      "key": "oidc",
+      "id": "oidc",
+      "title": "OIDC",
+      "quadrant": "identity",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "adopt",
+          "moved": 0,
+          "description": "Preferred identity protocol for user and workload authentication."
+        }
+      ],
+      "links": [{ "url": "https://openid.net/connect/", "title": "OIDC" }]
+    },
+    {
+      "key": "snyk",
+      "id": "snyk",
+      "title": "Snyk",
+      "quadrant": "appsec",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "adopt",
+          "moved": 0,
+          "description": "Dependency and container vulnerability checks in CI."
+        }
+      ],
+      "links": [{ "url": "https://snyk.io/", "title": "Snyk" }]
+    },
+    {
+      "key": "sbom",
+      "id": "sbom",
+      "title": "SBOM",
+      "quadrant": "appsec",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "trial",
+          "moved": 1,
+          "description": "Trial for release evidence and downstream audit needs."
+        }
+      ]
+    },
+    {
+      "key": "policy-as-code",
+      "id": "policy-as-code",
+      "title": "Policy as Code",
+      "quadrant": "platform-security",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "trial",
+          "moved": 1,
+          "description": "Pilot admission and CI checks for platform guardrails."
+        }
+      ]
+    },
+    {
+      "key": "secret-scanning",
+      "id": "secret-scanning",
+      "title": "Secret Scanning",
+      "quadrant": "operations",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "adopt",
+          "moved": 0,
+          "description": "Required for source repositories and CI logs."
+        }
+      ]
+    },
+    {
+      "key": "long-lived-access-keys",
+      "id": "long-lived-access-keys",
+      "title": "Long-lived Access Keys",
+      "quadrant": "identity",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "hold",
+          "moved": -1,
+          "description": "Prefer short-lived credentials and workload identity."
+        }
+      ]
+    }
+  ]
+}

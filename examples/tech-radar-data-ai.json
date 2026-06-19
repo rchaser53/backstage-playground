@@ -1,0 +1,122 @@
+{
+  "quadrants": [
+    { "id": "data-platform", "name": "Data Platform" },
+    { "id": "analytics", "name": "Analytics" },
+    { "id": "ml-ai", "name": "ML / AI" },
+    { "id": "governance", "name": "Governance" }
+  ],
+  "rings": [
+    {
+      "id": "adopt",
+      "name": "ADOPT",
+      "color": "#5ba300",
+      "description": "Supported baseline for data and AI projects."
+    },
+    {
+      "id": "trial",
+      "name": "TRIAL",
+      "color": "#009eb0",
+      "description": "Approved for pilots with clear success criteria."
+    },
+    {
+      "id": "assess",
+      "name": "ASSESS",
+      "color": "#c7ba00",
+      "description": "Evaluate with architecture and security review."
+    },
+    {
+      "id": "hold",
+      "name": "HOLD",
+      "color": "#e09b96",
+      "description": "Do not start new workloads here."
+    }
+  ],
+  "entries": [
+    {
+      "key": "dbt",
+      "id": "dbt",
+      "title": "dbt",
+      "quadrant": "analytics",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "adopt",
+          "moved": 0,
+          "description": "Standard transformation workflow for analytics models."
+        }
+      ],
+      "links": [{ "url": "https://www.getdbt.com/", "title": "dbt" }]
+    },
+    {
+      "key": "airflow",
+      "id": "airflow",
+      "title": "Apache Airflow",
+      "quadrant": "data-platform",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "adopt",
+          "moved": 0,
+          "description": "Default orchestrator for scheduled data pipelines."
+        }
+      ],
+      "links": [{ "url": "https://airflow.apache.org/", "title": "Airflow" }]
+    },
+    {
+      "key": "feature-store",
+      "id": "feature-store",
+      "title": "Feature Store",
+      "quadrant": "ml-ai",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "trial",
+          "moved": 1,
+          "description": "Trial for repeated model features shared across teams."
+        }
+      ]
+    },
+    {
+      "key": "vector-search",
+      "id": "vector-search",
+      "title": "Vector Search",
+      "quadrant": "ml-ai",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "trial",
+          "moved": 1,
+          "description": "Use for retrieval-backed AI experiences with measured quality."
+        }
+      ]
+    },
+    {
+      "key": "data-contracts",
+      "id": "data-contracts",
+      "title": "Data Contracts",
+      "quadrant": "governance",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "assess",
+          "moved": 0,
+          "description": "Assess for producer-owned schemas and compatibility rules."
+        }
+      ]
+    },
+    {
+      "key": "spreadsheet-pipelines",
+      "id": "spreadsheet-pipelines",
+      "title": "Spreadsheet Pipelines",
+      "quadrant": "data-platform",
+      "timeline": [
+        {
+          "date": "2026-06-01",
+          "ringId": "hold",
+          "moved": -1,
+          "description": "Replace with governed ingestion and reproducible transforms."
+        }
+      ]
+    }
+  ]
+}
