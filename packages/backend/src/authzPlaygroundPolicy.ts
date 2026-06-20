@@ -1,24 +1,29 @@
 import { coreServices, createBackendModule } from '@backstage/backend-plugin-api';
 import {
   AuthorizeResult,
+  isResourcePermission,
   type PolicyDecision,
 } from '@backstage/plugin-permission-common';
+import {
+  catalogConditions,
+  createCatalogConditionalDecision,
+} from '@backstage/plugin-catalog-backend/alpha';
 import {
   type PermissionPolicy,
   type PolicyQuery,
   type PolicyQueryUser,
-  policyExtensionPoint,
-} from '@backstage/plugin-permission-node/alpha';
+} from '@backstage/plugin-permission-node';
+import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 
-type AuthzPlaygroundMode =
-  | 'allow-all'
-  | 'deny-all'
-  | 'catalog-readonly'
-  | 'guests-readonly';
+type AuthzPlaygroundMode = 'playground' | 'allow-all' | 'deny-all';
 
-const DEFAULT_MODE: AuthzPlaygroundMode = 'guests-readonly';
+const DEFAULT_MODE: AuthzPlaygroundMode = 'playground';
 
-const readPermissionPatterns = [
+const authzAdminRefs = ['group:default/authz-admins'];
+const developerRefs = ['group:default/developers'];
+const guestRefs = ['user:default/guest', 'group:default/guests'];
+
+const publicReadPermissionPatterns = [
   /^catalog\.entity\.read$/,
   /^catalog\.location\.read$/,
   /^catalog\..*\.read$/,
@@ -26,7 +31,7 @@ const readPermissionPatterns = [
   /^techdocs\./,
 ];
 
-const writePermissionPatterns = [
+const guestDeniedPermissionPatterns = [
   /^catalog\..*\.(create|update|delete)$/,
   /^scaffolder\./,
   /^kubernetes\./,
@@ -34,36 +39,40 @@ const writePermissionPatterns = [
   /^mcp-actions\./,
 ];
 
+const developerAllowedPermissionPatterns = [
+  /^scaffolder\./,
+  /^catalog\.entity\.create$/,
+  /^catalog\.location\.create$/,
+  /^catalog\.location\.read$/,
+  /^catalog\.entity\.read$/,
+  /^search\./,
+  /^techdocs\./,
+];
+
 const normalizeMode = (value?: string): AuthzPlaygroundMode => {
-  if (
-    value === 'allow-all' ||
-    value === 'deny-all' ||
-    value === 'catalog-readonly' ||
-    value === 'guests-readonly'
-  ) {
+  if (value === 'playground' || value === 'allow-all' || value === 'deny-all') {
     return value;
   }
 
   return DEFAULT_MODE;
 };
 
-const isReadPermission = (permissionName: string) =>
-  readPermissionPatterns.some(pattern => pattern.test(permissionName));
-
-const isWritePermission = (permissionName: string) =>
-  writePermissionPatterns.some(pattern => pattern.test(permissionName));
-
-const isGuestUser = (user?: PolicyQueryUser) => {
-  if (!user) {
-    return true;
-  }
-
-  return (
-    user.info.userEntityRef === 'user:default/guest' ||
-    user.info.ownershipEntityRefs.includes('user:default/guest') ||
-    user.info.ownershipEntityRefs.includes('group:default/guests')
-  );
+const hasAnyOwnershipRef = (user: PolicyQueryUser | undefined, refs: string[]) => {
+  const claims = user?.info.ownershipEntityRefs ?? [];
+  return refs.some(ref => user?.info.userEntityRef === ref || claims.includes(ref));
 };
+
+const matchesAny = (permissionName: string, patterns: RegExp[]) =>
+  patterns.some(pattern => pattern.test(permissionName));
+
+const isPublicReadPermission = (permissionName: string) =>
+  matchesAny(permissionName, publicReadPermissionPatterns);
+
+const isGuestDeniedPermission = (permissionName: string) =>
+  matchesAny(permissionName, guestDeniedPermissionPatterns);
+
+const isDeveloperAllowedPermission = (permissionName: string) =>
+  matchesAny(permissionName, developerAllowedPermissionPatterns);
 
 class AuthzPlaygroundPermissionPolicy implements PermissionPolicy {
   constructor(
@@ -77,43 +86,69 @@ class AuthzPlaygroundPermissionPolicy implements PermissionPolicy {
   ): Promise<PolicyDecision> {
     const permissionName = request.permission.name;
     const userEntityRef = user?.info.userEntityRef ?? 'anonymous';
+    const ownershipRefs = user?.info.ownershipEntityRefs ?? [];
 
-    const result = this.evaluate(permissionName, user);
-
-    this.logger.info(
-      `authz-playground: ${result} permission=${permissionName} user=${userEntityRef} mode=${this.mode}`,
-    );
-
-    return { result };
-  }
-
-  private evaluate(
-    permissionName: string,
-    user?: PolicyQueryUser,
-  ): AuthorizeResult.ALLOW | AuthorizeResult.DENY {
     if (this.mode === 'allow-all') {
-      return AuthorizeResult.ALLOW;
+      this.logDecision(AuthorizeResult.ALLOW, permissionName, userEntityRef);
+      return { result: AuthorizeResult.ALLOW };
     }
 
     if (this.mode === 'deny-all') {
-      return AuthorizeResult.DENY;
+      this.logDecision(AuthorizeResult.DENY, permissionName, userEntityRef);
+      return { result: AuthorizeResult.DENY };
     }
 
-    if (this.mode === 'catalog-readonly') {
-      return isReadPermission(permissionName)
+    if (hasAnyOwnershipRef(user, authzAdminRefs)) {
+      this.logDecision(AuthorizeResult.ALLOW, permissionName, userEntityRef);
+      return { result: AuthorizeResult.ALLOW };
+    }
+
+    if (hasAnyOwnershipRef(user, guestRefs)) {
+      const result = isGuestDeniedPermission(permissionName)
+        ? AuthorizeResult.DENY
+        : AuthorizeResult.ALLOW;
+      this.logDecision(result, permissionName, userEntityRef);
+      return { result };
+    }
+
+    if (
+      isResourcePermission(request.permission, 'catalog-entity') &&
+      !isPublicReadPermission(permissionName)
+    ) {
+      this.logger.info(
+        `authz-playground: CONDITIONAL permission=${permissionName} user=${userEntityRef} mode=${this.mode} claims=${ownershipRefs.join(',')}`,
+      );
+      return createCatalogConditionalDecision(
+        request.permission,
+        catalogConditions.isEntityOwner({
+          claims: ownershipRefs,
+        }),
+      );
+    }
+
+    if (hasAnyOwnershipRef(user, developerRefs)) {
+      const result = isDeveloperAllowedPermission(permissionName)
         ? AuthorizeResult.ALLOW
         : AuthorizeResult.DENY;
+      this.logDecision(result, permissionName, userEntityRef);
+      return { result };
     }
 
-    if (this.mode === 'guests-readonly') {
-      if (isGuestUser(user) && isWritePermission(permissionName)) {
-        return AuthorizeResult.DENY;
-      }
+    const result = isPublicReadPermission(permissionName)
+      ? AuthorizeResult.ALLOW
+      : AuthorizeResult.DENY;
+    this.logDecision(result, permissionName, userEntityRef);
+    return { result };
+  }
 
-      return AuthorizeResult.ALLOW;
-    }
-
-    return AuthorizeResult.DENY;
+  private logDecision(
+    result: AuthorizeResult.ALLOW | AuthorizeResult.DENY,
+    permissionName: string,
+    userEntityRef: string,
+  ) {
+    this.logger.info(
+      `authz-playground: ${result} permission=${permissionName} user=${userEntityRef} mode=${this.mode}`,
+    );
   }
 }
 
