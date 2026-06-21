@@ -13122,7 +13122,9 @@ __metadata:
   resolution: "app@workspace:packages/app"
   dependencies:
     "@backstage-community/plugin-tech-radar": "npm:^1.18.0"
+    "@backstage-community/plugin-tech-radar-common": "npm:^1.17.0"
     "@backstage/cli": "npm:^0.36.2"
+    "@backstage/core-compat-api": "npm:^0.5.11"
     "@backstage/core-components": "npm:^0.18.10"
     "@backstage/core-plugin-api": "npm:^1.12.6"
     "@backstage/frontend-defaults": "npm:^0.5.2"
@@ -13762,6 +13764,7 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-tech-radar-backend": "npm:^1.17.1"
+    "@backstage-community/plugin-tech-radar-common": "npm:^1.17.0"
     "@backstage/backend-defaults": "npm:^0.17.1"
     "@backstage/backend-plugin-api": "npm:^1.9.1"
     "@backstage/cli": "npm:^0.36.2"
