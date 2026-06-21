@@ -3,8 +3,6 @@ name: CI
 on:
   pull_request:
   push:
-    branches:
-      - master
 
 jobs:
   build:
@@ -13,11 +11,58 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed files
+        id: changes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          run_all=false
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base="${{ github.event.pull_request.base.sha }}"
+            head="${{ github.event.pull_request.head.sha }}"
+          elif [[ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]]; then
+            base="${{ github.event.before }}"
+            head="${{ github.sha }}"
+          else
+            run_all=true
+          fi
+
+          if [[ "$run_all" == "true" ]]; then
+            echo "No reliable base commit found. Running all checks."
+            echo "typescript=true" >> "$GITHUB_OUTPUT"
+            echo "backend=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git diff --name-only "$base" "$head" | tee changed_files.txt
+
+          typescript=false
+          backend=false
+
+          if grep -Eq '(^|/)([^/]+\.)?(ts|tsx)$|(^|/)tsconfig[^/]*\.json$|^package\.json$|^yarn\.lock$|^\.yarnrc\.yml$|^\.yarn/|^app-config.*\.ya?ml$' changed_files.txt; then
+            typescript=true
+          fi
+
+          if grep -Eq '^packages/backend/|^plugins/.+-backend|^plugins/.+-backend-module-|^package\.json$|^yarn\.lock$|^\.yarnrc\.yml$|^\.yarn/|^app-config.*\.ya?ml$' changed_files.txt; then
+            backend=true
+          fi
+
+          echo "typescript=$typescript" >> "$GITHUB_OUTPUT"
+          echo "backend=$backend" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: yarn
+          cache-dependency-path: |
+            yarn.lock
+            package.json
 
       - name: Enable Corepack
         run: corepack enable
@@ -26,7 +71,17 @@ jobs:
         run: yarn install --immutable
 
       - name: TypeScript
+        if: steps.changes.outputs.typescript == 'true'
         run: yarn tsc
 
+      - name: Skip TypeScript
+        if: steps.changes.outputs.typescript != 'true'
+        run: echo "No TypeScript-related changes detected. Skipping yarn tsc."
+
       - name: Backend build
+        if: steps.changes.outputs.backend == 'true'
         run: yarn build:backend
+
+      - name: Skip Backend build
+        if: steps.changes.outputs.backend != 'true'
+        run: echo "No backend-related changes detected. Skipping yarn build:backend."
